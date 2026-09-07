@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>シャインマスカット兄弟メーカー - カード選択版</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      -webkit-text-size-adjust: 100%;
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #f6f7fb;
+      color: #222;
+      overflow-x: hidden;
+      padding-bottom: env(safe-area-inset-bottom);
+    }
+
+    .container {
+      width: min(1100px, 92%);
+      margin: 40px auto;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 8px;
+    }
+
+    .description {
+      text-align: center;
+      color: #666;
+      margin-bottom: 30px;
+    }
+
+    .edit-area {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+
+    .box {
+      background: white;
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.07);
+    }
+
+    .box h2 {
+      margin-top: 0;
+      font-size: 1.1rem;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 180px;
+      resize: vertical;
+      border: 1px solid #d7dbe5;
+      border-radius: 10px;
+      padding: 12px;
+      font-size: 16px;
+      line-height: 1.7;
+      outline: none;
+    }
+
+    .controls {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin: 22px 0 30px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      border: 0;
+      border-radius: 999px;
+      padding: 12px 22px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      background: #5f6fff;
+      color: white;
+    }
+
+    button.secondary {
+      background: #e9ebf3;
+      color: #333;
+    }
+
+    .picker {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    .picker-column {
+      background: white;
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.07);
+    }
+
+    .picker-column h2 {
+      margin-top: 0;
+    }
+
+    .cards {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .card {
+      border: 2px solid transparent;
+      background: #f2f3f8;
+      border-radius: 12px;
+      padding: 12px 16px;
+      min-height: 46px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+      font-weight: 700;
+      transition: transform 0.12s ease, border-color 0.12s ease, background 0.12s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-2px);
+    }
+
+    .card.selected {
+      border-color: #5f6fff;
+      background: #eef0ff;
+    }
+
+    .result {
+      background: white;
+      border-radius: 18px;
+      padding: 30px 20px;
+      text-align: center;
+      margin-top: 30px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.07);
+    }
+
+    .result-label {
+      color: #777;
+      font-size: 0.9rem;
+      margin-bottom: 12px;
+    }
+
+    .result-name {
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 900;
+      word-break: break-word;
+    }
+
+    .parts {
+      margin-top: 12px;
+      color: #888;
+    }
+
+    @media (max-width: 750px) {
+      .container {
+        width: 94%;
+        margin: 20px auto 28px;
+      }
+
+      h1 {
+        font-size: 1.55rem;
+        line-height: 1.35;
+      }
+
+      .description {
+        font-size: 0.95rem;
+        margin-bottom: 20px;
+      }
+
+      .edit-area,
+      .picker {
+        grid-template-columns: 1fr;
+      }
+
+      .edit-area {
+        gap: 14px;
+      }
+
+      .picker {
+        gap: 16px;
+      }
+
+      .box,
+      .picker-column {
+        padding: 16px;
+        border-radius: 14px;
+      }
+
+      textarea {
+        min-height: 150px;
+      }
+
+      .controls {
+        margin: 18px 0 24px;
+      }
+
+      .controls button {
+        flex: 1 1 140px;
+        min-height: 50px;
+        touch-action: manipulation;
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      .cards {
+        gap: 8px;
+      }
+
+      .card {
+        flex: 1 1 calc(50% - 8px);
+        min-width: 0;
+        padding: 12px 10px;
+        text-align: center;
+        overflow-wrap: anywhere;
+      }
+
+      .result {
+        margin-top: 20px;
+        padding: 26px 14px;
+        border-radius: 16px;
+      }
+
+      .result-name {
+        font-size: clamp(1.8rem, 11vw, 3rem);
+        line-height: 1.25;
+      }
+
+      .parts {
+        font-size: 0.9rem;
+      }
+    }
+
+    @media (max-width: 380px) {
+      .card {
+        flex-basis: 100%;
+      }
+    }
+  
+    .site-back{width:min(1000px,92%);margin:18px auto -10px}
+    .site-back a{display:inline-flex;align-items:center;gap:7px;padding:9px 12px;border-radius:999px;background:rgba(255,255,255,.85);color:#687083;text-decoration:none;font-size:.9rem;box-shadow:0 4px 14px rgba(0,0,0,.04)}
+    @media(max-width:700px){.site-back{width:94%;margin-top:14px}}
+    
+</style>
+</head>
+<body>
+<div class="site-back"><a href="./">← シャインマスカット兄弟メーカー</a></div>
+  <main class="container">
+    <h1>シャインマスカット兄弟メーカー</h1>
+    <p class="description">上の句・下の句をカードにして、自分で1枚ずつ選んで合成します。</p>
+
+    <section class="edit-area">
+      <div class="box">
+        <h2>上の句リスト</h2>
+        <textarea id="upperWords">シャイン
+グロー
+グリーム
+スパークル
+ルミナス
+ラディアント
+ブリリアント
+きらめき
+輝き
+光彩</textarea>
+      </div>
+
+      <div class="box">
+        <h2>下の句リスト</h2>
+        <textarea id="lowerWords">マスカット
+グレープ
+葡萄
+青葡萄
+翠葡萄
+ベリー
+マスケート</textarea>
+      </div>
+    </section>
+
+    <div class="controls">
+      <button id="makeCardsButton">カードに変換</button>
+      <button id="resetButton" class="secondary">選択をリセット</button>
+    </div>
+
+    <section class="picker">
+      <div class="picker-column">
+        <h2>上の句カード</h2>
+        <div id="upperCards" class="cards"></div>
+      </div>
+
+      <div class="picker-column">
+        <h2>下の句カード</h2>
+        <div id="lowerCards" class="cards"></div>
+      </div>
+    </section>
+
+    <section class="result">
+      <div class="result-label">あなたが選んだ兄弟</div>
+      <div class="result-name" id="resultName">？？？？？？</div>
+      <div class="parts" id="resultParts">上の句を1つ、下の句を1つ選んでください</div>
+    </section>
+  </main>
+
+  <script>
+    const upperWords = document.getElementById("upperWords");
+    const lowerWords = document.getElementById("lowerWords");
+
+    const upperCards = document.getElementById("upperCards");
+    const lowerCards = document.getElementById("lowerCards");
+
+    const makeCardsButton = document.getElementById("makeCardsButton");
+    const resetButton = document.getElementById("resetButton");
+
+    const resultName = document.getElementById("resultName");
+    const resultParts = document.getElementById("resultParts");
+
+    let selectedUpper = null;
+    let selectedLower = null;
+
+    function getWords(textarea) {
+      return textarea.value
+        .split("\n")
+        .map(word => word.trim())
+        .filter(Boolean);
+    }
+
+    function renderCards(words, container, type) {
+      container.innerHTML = "";
+
+      words.forEach(word => {
+        const card = document.createElement("div");
+        card.className = "card";
+        card.textContent = word;
+
+        card.addEventListener("click", () => {
+          [...container.children].forEach(c => c.classList.remove("selected"));
+          card.classList.add("selected");
+
+          if (type === "upper") {
+            selectedUpper = word;
+          } else {
+            selectedLower = word;
+          }
+
+          updateResult();
+        });
+
+        container.appendChild(card);
+      });
+    }
+
+    function updateResult() {
+      if (selectedUpper && selectedLower) {
+        resultName.textContent = selectedUpper + selectedLower;
+        resultParts.textContent = `${selectedUpper} ＋ ${selectedLower}`;
+      } else if (selectedUpper) {
+        resultName.textContent = selectedUpper + "？？？";
+        resultParts.textContent = `上の句「${selectedUpper}」を選択中`;
+      } else if (selectedLower) {
+        resultName.textContent = "？？？" + selectedLower;
+        resultParts.textContent = `下の句「${selectedLower}」を選択中`;
+      } else {
+        resultName.textContent = "？？？？？？";
+        resultParts.textContent = "上の句を1つ、下の句を1つ選んでください";
+      }
+    }
+
+    function buildCards() {
+      const uppers = getWords(upperWords);
+      const lowers = getWords(lowerWords);
+
+      selectedUpper = null;
+      selectedLower = null;
+
+      renderCards(uppers, upperCards, "upper");
+      renderCards(lowers, lowerCards, "lower");
+
+      updateResult();
+    }
+
+    makeCardsButton.addEventListener("click", buildCards);
+
+    resetButton.addEventListener("click", () => {
+      selectedUpper = null;
+      selectedLower = null;
+
+      [...document.querySelectorAll(".card")].forEach(card => {
+        card.classList.remove("selected");
+      });
+
+      updateResult();
+    });
+
+    buildCards();
+  </script>
+</body>
+</html>

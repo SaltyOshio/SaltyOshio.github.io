@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>シャインマスカット兄弟メーカー - シャッフル版</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      -webkit-text-size-adjust: 100%;
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #f6f7fb;
+      color: #222;
+      overflow-x: hidden;
+      padding-bottom: env(safe-area-inset-bottom);
+    }
+
+    .container {
+      width: min(1000px, 92%);
+      margin: 40px auto;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 8px;
+    }
+
+    .description {
+      text-align: center;
+      color: #666;
+      margin-bottom: 32px;
+    }
+
+    .lists {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .box {
+      background: white;
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.07);
+    }
+
+    .box h2 {
+      margin-top: 0;
+      font-size: 1.1rem;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 240px;
+      resize: vertical;
+      border: 1px solid #d7dbe5;
+      border-radius: 10px;
+      padding: 12px;
+      font-size: 16px;
+      line-height: 1.7;
+      outline: none;
+    }
+
+    textarea:focus {
+      border-color: #7c8cff;
+      box-shadow: 0 0 0 3px rgba(124,140,255,0.12);
+    }
+
+    .controls {
+      display: flex;
+      justify-content: center;
+      margin: 30px 0;
+    }
+
+    button {
+      border: 0;
+      border-radius: 999px;
+      padding: 14px 28px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      background: #5f6fff;
+      color: white;
+      box-shadow: 0 8px 20px rgba(95,111,255,0.25);
+      transition: transform 0.15s ease, opacity 0.15s ease;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+    }
+
+    button:active {
+      transform: translateY(0);
+      opacity: 0.85;
+    }
+
+    .result {
+      background: white;
+      border-radius: 18px;
+      padding: 32px 20px;
+      text-align: center;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.07);
+    }
+
+    .result-label {
+      color: #777;
+      font-size: 0.9rem;
+      margin-bottom: 12px;
+    }
+
+    .result-name {
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 900;
+      word-break: break-word;
+    }
+
+    .parts {
+      margin-top: 12px;
+      color: #888;
+    }
+
+    @media (max-width: 700px) {
+      .container {
+        width: 94%;
+        margin: 20px auto 28px;
+      }
+
+      h1 {
+        font-size: 1.55rem;
+        line-height: 1.35;
+      }
+
+      .description {
+        font-size: 0.95rem;
+        margin-bottom: 20px;
+      }
+
+      .lists {
+        grid-template-columns: 1fr;
+        gap: 14px;
+      }
+
+      .box {
+        padding: 16px;
+        border-radius: 14px;
+      }
+
+      textarea {
+        min-height: 170px;
+      }
+
+      .controls {
+        margin: 20px 0;
+      }
+
+      button {
+        width: 100%;
+        min-height: 52px;
+        font-size: 1rem;
+        touch-action: manipulation;
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      .result {
+        padding: 26px 14px;
+        border-radius: 16px;
+      }
+
+      .result-name {
+        font-size: clamp(1.8rem, 11vw, 3rem);
+        line-height: 1.25;
+      }
+
+      .parts {
+        font-size: 0.9rem;
+      }
+    }
+  
+    .site-back{width:min(1000px,92%);margin:18px auto -10px}
+    .site-back a{display:inline-flex;align-items:center;gap:7px;padding:9px 12px;border-radius:999px;background:rgba(255,255,255,.85);color:#687083;text-decoration:none;font-size:.9rem;box-shadow:0 4px 14px rgba(0,0,0,.04)}
+    @media(max-width:700px){.site-back{width:94%;margin-top:14px}}
+    
+</style>
+</head>
+<body>
+<div class="site-back"><a href="./">← シャインマスカット兄弟メーカー</a></div>
+  <main class="container">
+    <h1>シャインマスカット兄弟メーカー</h1>
+    <p class="description">上の句と下の句から1つずつランダムに選んで合成します。</p>
+
+    <section class="lists">
+      <div class="box">
+        <h2>上の句</h2>
+        <textarea id="upperWords">シャイン
+グロー
+グリーム
+スパークル
+ルミナス
+ラディアント
+ブリリアント
+きらめき
+輝き
+光彩</textarea>
+      </div>
+
+      <div class="box">
+        <h2>下の句</h2>
+        <textarea id="lowerWords">マスカット
+グレープ
+葡萄
+青葡萄
+翠葡萄
+ベリー
+マスケート</textarea>
+      </div>
+    </section>
+
+    <div class="controls">
+      <button id="shuffleButton">シャッフル！</button>
+    </div>
+
+    <section class="result">
+      <div class="result-label">今回の兄弟</div>
+      <div class="result-name" id="resultName">？？？？？？</div>
+      <div class="parts" id="resultParts">上の句 ＋ 下の句</div>
+    </section>
+  </main>
+
+  <script>
+    const upperWords = document.getElementById("upperWords");
+    const lowerWords = document.getElementById("lowerWords");
+    const shuffleButton = document.getElementById("shuffleButton");
+    const resultName = document.getElementById("resultName");
+    const resultParts = document.getElementById("resultParts");
+
+    function getWords(textarea) {
+      return textarea.value
+        .split("\n")
+        .map(word => word.trim())
+        .filter(Boolean);
+    }
+
+    function randomPick(items) {
+      return items[Math.floor(Math.random() * items.length)];
+    }
+
+    shuffleButton.addEventListener("click", () => {
+      const uppers = getWords(upperWords);
+      const lowers = getWords(lowerWords);
+
+      if (uppers.length === 0 || lowers.length === 0) {
+        resultName.textContent = "単語を入れてください";
+        resultParts.textContent = "上の句・下の句の両方が必要です";
+        return;
+      }
+
+      const upper = randomPick(uppers);
+      const lower = randomPick(lowers);
+
+      resultName.textContent = upper + lower;
+      resultParts.textContent = `${upper} ＋ ${lower}`;
+    });
+  </script>
+</body>
+</html>
